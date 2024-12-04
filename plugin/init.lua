@@ -1,1 +1,1 @@
-require('chameleon')
+require("chameleon").setup()

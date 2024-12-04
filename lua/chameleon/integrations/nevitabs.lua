@@ -116,7 +116,7 @@ local highlights = {
   },
 }
 
-local kitty_style = require('neviraide-ui').config.ui.buftab.style
+local kitty_style = 'slant'
 
 local current_style = tab_styles[kitty_style]
 

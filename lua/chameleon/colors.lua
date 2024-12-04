@@ -2,12 +2,43 @@ local M = {}
 
 M.palette = {}
 
+local theme_path = os.getenv("HOME") .. "/.config/kitty/theme.conf"
+
+M.colors = {
+  kitty = {},
+}
+
+local function extract_kitty_colors()
+  local theme_file = io.open(theme_path, "r")
+  if not theme_file then
+    print("Failed to open file: " .. theme_path)
+  end
+
+  if theme_file then
+    for line in theme_file:lines() do
+      local color_name, color_value = line:match("^([%w%-_]+)%s+#([%da-fA-F]+)")
+      if color_name and color_value then
+        if color_name == "active_tab_background" then
+          color_name = "tab_background"
+        end
+        M.colors.kitty[color_name] = "#" .. color_value
+      end
+    end
+  end
+
+  if theme_file then
+    theme_file:close()
+  end
+end
+
+extract_kitty_colors()
+
 local function set_colors()
   ---@type table
-  local theme_colors = require('chameleon.utils').get_theme_tb('colors')
-  local kitty_colors = require('neviraide-ui.kitty').colors.kitty
+  local theme_colors = require("chameleon.utils").get_theme_tb("colors")
+  local kitty_colors = M.colors.kitty
 
-  if require('chameleon').config.hyde then
+  if require("chameleon").config.hyde then
     -- combine theme_colors and kitty_colors
     for key, value in pairs(theme_colors) do
       if kitty_colors[key] ~= nil then
@@ -19,7 +50,9 @@ local function set_colors()
 
     -- add from kitty_colors, if not exist in theme_colors
     for key, value in pairs(kitty_colors) do
-      if theme_colors[key] == nil then M.palette[key] = value end
+      if theme_colors[key] == nil then
+        M.palette[key] = value
+      end
     end
   else
     M.palette = theme_colors
@@ -44,13 +77,19 @@ end
 ---@param g integer Green (0-255)
 ---@param b integer Blue (0-255)
 ---@return string HEX The hexadecimal string representation of the color
-M.rgb2hex = function(r, g, b) return string.format('#%02x%02x%02x', r, g, b) end
+M.rgb2hex = function(r, g, b)
+  return string.format("#%02x%02x%02x", r, g, b)
+end
 
 -- Helper function to convert a HSL color value to RGB
 -- Not to be used directly, use M.hsl2rgb instead
 local hsl2rgb_helper = function(p, q, a)
-  if a < 0 then a = a + 6 end
-  if a >= 6 then a = a - 6 end
+  if a < 0 then
+    a = a + 6
+  end
+  if a >= 6 then
+    a = a - 6
+  end
   if a < 1 then
     return (q - p) * a + p
   elseif a < 3 then
@@ -110,11 +149,15 @@ M.rgb2hsl = function(r, g, b)
     h = 4 + (r - g) / (max - min)
   end
 
-  if not rawequal(type(h), 'number') then h = 0 end
+  if not rawequal(type(h), "number") then
+    h = 0
+  end
 
   h = h * 60
 
-  if h < 0 then h = h + 360 end
+  if h < 0 then
+    h = h + 360
+  end
 
   l = (min + max) / 2
 
@@ -159,8 +202,12 @@ end
 M.change_hex_hue = function(hex, percent)
   local h, s, l = M.hex2hsl(hex)
   h = h + (percent / 100)
-  if h > 360 then h = 360 end
-  if h < 0 then h = 0 end
+  if h > 360 then
+    h = 360
+  end
+  if h < 0 then
+    h = 0
+  end
   return M.hsl2hex(h, s, l)
 end
 
@@ -172,8 +219,12 @@ end
 M.change_hex_saturation = function(hex, percent)
   local h, s, l = M.hex2hsl(hex)
   s = s + (percent / 100)
-  if s > 1 then s = 1 end
-  if s < 0 then s = 0 end
+  if s > 1 then
+    s = 1
+  end
+  if s < 0 then
+    s = 0
+  end
   return M.hsl2hex(h, s, l)
 end
 
@@ -185,8 +236,12 @@ end
 M.change_hex_lightness = function(hex, percent)
   local h, s, l = M.hex2hsl(hex)
   l = l + (percent / 100)
-  if l > 1 then l = 1 end
-  if l < 0 then l = 0 end
+  if l > 1 then
+    l = 1
+  end
+  if l < 0 then
+    l = 0
+  end
   return M.hsl2hex(h, s, l)
 end
 

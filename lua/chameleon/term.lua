@@ -1,4 +1,4 @@
-local color = require('chameleon.colors').palette
+local color = require("chameleon.colors").palette
 
 vim.g.terminal_color_0 = color.black
 vim.g.terminal_color_1 = color.red
