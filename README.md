@@ -10,6 +10,13 @@ Credits to [RAprogramm](https://github.com/RAprogramm) for his amazing work.
 		event = "VeryLazy",
 }
 ```
+
+Keybinds
+```
+<leader>sC Choose theme 
+<leader>sT Toggle hyde integration
+```
+
 ---
 
 [![Catppuccin-Mocha](https://placehold.co/130x30/b4befe/11111b?text=Catppuccin-Mocha&font=Oswald)](#-Catppuccin-Mocha)
