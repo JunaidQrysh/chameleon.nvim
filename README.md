@@ -1,7 +1,15 @@
 # Chameleon
 
-NeViRAIDE colorschemes
+Collection of colorschemes for Neovim with theme switching and [HyDE](https://github.com/prasanthrangan/hyprdots) support.\
+Credits to [RAprogramm](https://github.com/RAprogramm) for his amazing work.
 
+```
+{
+		"JunaidQrysh/chameleon.nvim",
+		dependencies = { { "folke/which-key.nvim" }, { "MunifTanjim/nui.nvim" } },
+		event = "VeryLazy",
+}
+```
 ---
 
 [![Catppuccin-Mocha](https://placehold.co/130x30/b4befe/11111b?text=Catppuccin-Mocha&font=Oswald)](#-Catppuccin-Mocha)
