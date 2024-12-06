@@ -62,6 +62,7 @@ M.choose_theme = function()
     -- on_close = function() print('Menu Closed!') end,
     on_submit = function(item)
       M.change_theme(item.text)
+      vim.g.nt = item.text
       require("chameleon.utils").load_all_highlights()
     end,
   })
