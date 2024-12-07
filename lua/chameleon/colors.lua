@@ -31,7 +31,9 @@ local function extract_kitty_colors()
   end
 end
 
+if require("chameleon").config.hyde then
 extract_kitty_colors()
+end
 
 local function set_colors()
   ---@type table
