@@ -10,10 +10,6 @@ M.colors = {
 
 local function extract_kitty_colors()
   local theme_file = io.open(theme_path, "r")
-  if not theme_file then
-    print("Failed to open file: " .. theme_path)
-  end
-
   if theme_file then
     for line in theme_file:lines() do
       local color_name, color_value = line:match("^([%w%-_]+)%s+#([%da-fA-F]+)")
@@ -31,9 +27,7 @@ local function extract_kitty_colors()
   end
 end
 
-if require("chameleon").config.hyde then
 extract_kitty_colors()
-end
 
 local function set_colors()
   ---@type table
