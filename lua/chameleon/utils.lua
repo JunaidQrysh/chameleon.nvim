@@ -3,7 +3,7 @@ local M = {} -- Module table for exporting functions and variables
 
 local ntc = vim.fn.stdpath("data") .. "/neviraide_ui/"
 
-local chameleon_path = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":p:h")
+M.chameleon_path = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":p:h")
 
 ---Function to get the theme table (color scheme)
 ---@return table Theme table
@@ -63,8 +63,7 @@ M.table_to_str = function(tb)
 		local opts = ""
 
 		for optName, optVal in pairs(hlgroup_vals) do
-			local valueInStr = ((type(optVal)) == "boolean" or type(optVal) == "number")
-					and tostring(optVal)
+			local valueInStr = ((type(optVal)) == "boolean" or type(optVal) == "number") and tostring(optVal)
 				or '"' .. optVal .. '"'
 			opts = opts .. optName .. "=" .. valueInStr .. ","
 		end
@@ -99,7 +98,7 @@ M.compile = function()
 	end
 
 	-- All integration modules, each file returns a table
-	local hl_files = chameleon_path .. "/integrations"
+	local hl_files = M.chameleon_path .. "/integrations"
 
 	for _, file in ipairs(vim.fn.readdir(hl_files)) do
 		local filename = vim.fn.fnamemodify(file, ":r")
@@ -118,23 +117,20 @@ M.load_all_highlights = function()
 end
 
 M.ToggleHyde = function()
-	local config_path = chameleon_path .. ".lua"
-	local lines = {}
-	-- Read the file
-	for line in io.lines(config_path) do
-		-- Check if the line contains 'hyde =' and replace the value
-		local new_line = line:gsub("hyde%s*=%s*(%w+)", function(current)
-			return "hyde = " .. tostring(current == "false")
-		end)
-		table.insert(lines, new_line)
+	local theme_path = vim.fn.stdpath("data") .. "/theme"
+	local file = io.open(theme_path, "r")
+	if file then
+		file:close()
+		os.remove(theme_path)
+	else
+		local new_file = io.open(theme_path, "w")
+		if new_file then
+			new_file:write(vim.g.nt)
+			new_file:close()
+		else
+			print("Error: Could not create theme file")
+		end
 	end
-	-- Write back to the file
-	local file = io.open(config_path, "w")
-	for _, line in ipairs(lines) do
-		file:write(line .. "\n")
-	end
-	file:close()
-	print("Hyde value toggled successfully")
 end
 
 return M
