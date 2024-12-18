@@ -1,5 +1,6 @@
 local color = require('chameleon.colors').palette
 local generate_color = require('chameleon.colors').change_hex_lightness
+local vim_bg = require("chameleon.colorschemes." .. vim.g.nt).type
 
 local defaults = {
   LineSeparator = {
@@ -133,7 +134,7 @@ local defaults = {
   },
 
   Visual = {
-    bg = generate_color(color.grey, vim.o.bg == 'dark' and -10 or 10),
+    bg = generate_color(color.grey, vim_bg == 'dark' and -10 or 10),
   },
   VisualNOS = {
     fg = color.pink,
@@ -163,7 +164,7 @@ local defaults = {
   },
 
   NonText = {
-    fg = generate_color(color.bright_black, vim.o.bg == 'dark' and 0 or 30),
+    fg = generate_color(color.bright_black, vim_bg == 'dark' and 0 or 30),
   },
 
   SignColumn = {
@@ -177,7 +178,7 @@ local defaults = {
   },
 
   CursorLine = {
-    bg = generate_color(color.black, vim.o.bg == 'dark' and -10 or 50),
+    bg = generate_color(color.black, vim_bg == 'dark' and -10 or 50),
     sp = 'none',
   },
 
@@ -213,13 +214,13 @@ local defaults = {
   },
 
   NeviraideTerminalDarkerBG = {
-    bg = generate_color(color.background, vim.o.bg == 'dark' and -3 or 15),
+    bg = generate_color(color.background, vim_bg == 'dark' and -3 or 15),
   },
   NeviraideHelpDarkerBG = {
-    bg = generate_color(color.background, vim.o.bg == 'dark' and -3 or 15),
+    bg = generate_color(color.background, vim_bg == 'dark' and -3 or 15),
   },
   NeviraideTerminalWinbar = {
-    bg = generate_color(color.background, vim.o.bg == 'dark' and -3 or 15),
+    bg = generate_color(color.background, vim_bg == 'dark' and -3 or 15),
   },
 }
 
@@ -229,7 +230,7 @@ defaults =
 
 defaults.NuiTitle = { bg = 'none', fg = color.active_accent, bold = true }
 
-if vim.g.b == 'none' or vim.g.b == 'solid' or vim.g.b == 'shadow' then
+if vim.g.b == 'none' or vim.g.b == 'solid' then
   defaults.FloatBorder = { fg = color.second_background }
   defaults.NormalFloat = { bg = color.second_background }
   defaults.NuiTitle =

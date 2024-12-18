@@ -16,28 +16,25 @@ else
     vim.g.nt = "Tokyo-Night"
   end
 end
-
-require("which-key").add({
-  {
-    "<leader>sC",
-    function()
-      require("chameleon.nui").choose_theme()
-    end,
-    desc = "Colorscheme",
-  },
-})
-
-require("which-key").add({
-  {
-    "<leader>sT",
-    function()
-      require("chameleon.utils").ToggleHyde()
-    end,
-    desc = "Toggle-Hyde",
-  },
-})
+vim.g.b = require("chameleon.utils").get_theme_tb("borders")
 
 function M.setup()
+  require("which-key").add({
+    {
+      "<leader>sC",
+      function()
+        require("chameleon.nui").choose_theme()
+      end,
+      desc = "Colorscheme",
+    },
+    {
+      "<leader>sT",
+      function()
+        require("chameleon.utils").ToggleHyde()
+      end,
+      desc = "Toggle-Hyde",
+    },
+  })
   require("chameleon.utils").load_all_highlights()
 end
 

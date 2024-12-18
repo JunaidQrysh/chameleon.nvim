@@ -2,7 +2,7 @@
 local M = {}
 
 M.type = 'dark'
-M.borders = 'shadow'
+M.borders = 'solid'
 
 M.colors = {
   active_accent = '#3d59a1',

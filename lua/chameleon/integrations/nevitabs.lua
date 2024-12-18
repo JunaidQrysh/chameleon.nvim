@@ -1,7 +1,7 @@
 local color = require('chameleon.colors').palette
-
 local gc = require('chameleon.colors').change_hex_lightness
-local darker_bg = gc(color.background, vim.o.bg == 'dark' and -3 or -15)
+local vim_bg = require("chameleon.colorschemes." .. vim.g.nt).type
+local darker_bg = gc(color.background, vim_bg == 'dark' and -3 or -15)
 
 local cg =
   require('chameleon.colors').compute_gradient

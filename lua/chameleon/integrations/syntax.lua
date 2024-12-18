@@ -1,10 +1,11 @@
 local color = require('chameleon.colors').palette
 local generate_color =
   require('chameleon.colors').change_hex_lightness
+local vim_bg = require("chameleon.colorschemes." .. vim.g.nt).type
 
 local syntax = {
   Boolean = {
-    fg = generate_color(color.yellow, vim.o.bg == 'dark' and 0 or -10),
+    fg = generate_color(color.yellow, vim_bg == 'dark' and 0 or -10),
   },
   Character = { fg = color.pink },
   Conditional = { fg = color.magenta },

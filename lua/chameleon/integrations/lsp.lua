@@ -1,19 +1,20 @@
 local color = require('chameleon.colors').palette
 local generate_color =
   require('chameleon.colors').change_hex_lightness
+local vim_bg = require("chameleon.colorschemes." .. vim.g.nt).type
 
 return {
   -- LSP References
   LspReferenceText = {
-    bg = generate_color(color.black, vim.o.bg == 'dark' and 0 or 45),
+    bg = generate_color(color.black, vim_bg == 'dark' and 0 or 45),
     bold = true,
   },
   LspReferenceRead = {
-    bg = generate_color(color.black, vim.o.bg == 'dark' and 0 or 45),
+    bg = generate_color(color.black, vim_bg == 'dark' and 0 or 45),
     bold = true,
   },
   LspReferenceWrite = {
-    bg = generate_color(color.black, vim.o.bg == 'dark' and 0 or 45),
+    bg = generate_color(color.black, vim_bg == 'dark' and 0 or 45),
     bold = true,
     underline = true,
   },

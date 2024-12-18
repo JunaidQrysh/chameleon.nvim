@@ -1,10 +1,10 @@
 local color = require('chameleon.colors').palette
 local generate_color =
   require('chameleon.colors').change_hex_lightness
-
-local magenta = generate_color(color.magenta, vim.o.bg == 'dark' and 0 or -20)
+local vim_bg = require("chameleon.colorschemes." .. vim.g.nt).type
+local magenta = generate_color(color.magenta, vim_bg == 'dark' and 0 or -20)
 -- TODO: change from pink to another
-color.pink = generate_color(color.pink, vim.o.bg == 'dark' and 10 or 0)
+color.pink = generate_color(color.pink, vim_bg == 'dark' and 10 or 0)
 
 return {
   ['@variable'] = { fg = color.white },
@@ -20,7 +20,7 @@ return {
   ['@constant.builtin'] = { fg = color.yellow },
   ['@constant.macro'] = { fg = color.pink },
 
-  ['@string'] = { fg = vim.o.bg == 'dark' and color.green or '#000000' },
+  ['@string'] = { fg = vim_bg == 'dark' and color.green or '#000000' },
   ['@string.regex'] = { fg = color.cyan },
   ['@string.escape'] = { fg = color.cyan },
   ['@character'] = { fg = color.pink },

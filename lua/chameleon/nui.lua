@@ -32,7 +32,7 @@ M.choose_theme = function()
       Menu.item("Tokyo-Night"),
       Menu.item("Material-Sakura"),
       Menu.item("Graphite-Mono"),
-      Menu.item("Cyberpunk-Edge"),
+      Menu.item("Edge-Runner"),
       Menu.item("Frosted-Glass"),
       Menu.item("Gruvbox-Retro"),
       Menu.item("Synth-Wave"),

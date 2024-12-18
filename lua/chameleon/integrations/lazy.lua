@@ -1,19 +1,20 @@
 local color = require('chameleon.colors').palette
 local generate_color =
   require('chameleon.colors').change_hex_lightness
+local vim_bg = require("chameleon.colorschemes." .. vim.g.nt).type
 
 return {
   LazyH1 = {
     bg = color.inactive_accent,
-    fg = generate_color(color.active_accent, vim.o.bg == 'dark' and 10 or 20),
+    fg = generate_color(color.active_accent, vim_bg == 'dark' and 10 or 20),
   },
 
   LazyButton = {
-    fg = generate_color(color.active_accent, vim.o.bg == 'dark' and 10 or -20),
+    fg = generate_color(color.active_accent, vim_bg == 'dark' and 10 or -20),
   },
   LazyButtonActive = {
     bg = color.inactive_accent,
-    fg = generate_color(color.active_accent, vim.o.bg == 'dark' and 10 or 20),
+    fg = generate_color(color.active_accent, vim_bg == 'dark' and 10 or 20),
   },
 
   LazyH2 = {
