@@ -122,6 +122,7 @@ M.ToggleHyde = function()
   if file then
     file:close()
     os.remove(theme_path)
+    M.load_all_highlights()
   else
     local new_file = io.open(theme_path, "w")
     if new_file then

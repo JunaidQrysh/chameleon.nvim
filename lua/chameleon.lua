@@ -16,9 +16,9 @@ else
     vim.g.nt = "Tokyo-Night"
   end
 end
-vim.g.b = require("chameleon.utils").get_theme_tb("borders")
 
 function M.setup()
+  vim.g.b = require("chameleon.utils").get_theme_tb("borders")
   require("which-key").add({
     {
       "<leader>sC",
