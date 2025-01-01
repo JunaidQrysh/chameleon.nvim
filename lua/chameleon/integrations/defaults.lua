@@ -1,10 +1,10 @@
-local color = require('chameleon.colors').palette
-local generate_color = require('chameleon.colors').change_hex_lightness
+local color = require("chameleon.colors").palette
+local generate_color = require("chameleon.colors").change_hex_lightness
 local vim_bg = require("chameleon.colorschemes." .. vim.g.nt).type
 
 local defaults = {
   LineSeparator = {
-    link = 'WinSeparator',
+    link = "WinSeparator",
   },
 
   MatchWord = {
@@ -13,7 +13,7 @@ local defaults = {
   },
 
   WinBar = { bg = color.background },
-  WinBarNC = { link = 'WinBar' },
+  WinBarNC = { link = "WinBar" },
 
   -- cmdline menu
   Pmenu = { bg = color.second_background, fg = color.active_accent },
@@ -25,7 +25,7 @@ local defaults = {
   },
   PmenuThumb = { bg = color.red },
 
-  MatchParen = { link = 'MatchWord' },
+  MatchParen = { link = "MatchWord" },
 
   Comment = { fg = color.grey, italic = true },
 
@@ -34,7 +34,7 @@ local defaults = {
 
   -- floating windows
   FloatBorder = { fg = color.inactive_accent },
-  NormalFloat = { bg = 'none' },
+  NormalFloat = { bg = "none" },
 
   NvimInternalError = { fg = color.red },
 
@@ -118,7 +118,7 @@ local defaults = {
   Substitute = {
     fg = color.black,
     bg = color.bright_yellow,
-    sp = 'none',
+    sp = "none",
   },
 
   SpecialKey = {
@@ -134,7 +134,7 @@ local defaults = {
   },
 
   Visual = {
-    bg = generate_color(color.grey, vim_bg == 'dark' and -10 or 10),
+    bg = generate_color(color.grey, vim_bg == "dark" and -10 or 10),
   },
   VisualNOS = {
     fg = color.pink,
@@ -151,11 +151,11 @@ local defaults = {
 
   Title = {
     fg = color.active_accent,
-    sp = 'none',
+    sp = "none",
   },
 
   Conceal = {
-    bg = 'NONE',
+    bg = "NONE",
   },
 
   Cursor = {
@@ -164,27 +164,27 @@ local defaults = {
   },
 
   NonText = {
-    fg = generate_color(color.bright_black, vim_bg == 'dark' and 0 or 30),
+    fg = generate_color(color.bright_black, vim_bg == "dark" and 0 or 30),
   },
 
   SignColumn = {
     fg = color.bright_black,
-    sp = 'NONE',
+    sp = "NONE",
   },
 
   ColorColumn = {
     bg = color.black,
-    sp = 'none',
+    sp = "none",
   },
 
   CursorLine = {
-    bg = generate_color(color.black, vim_bg == 'dark' and -10 or 50),
-    sp = 'none',
+    bg = generate_color(color.black, vim_bg == "dark" and -10 or 50),
+    sp = "none",
   },
 
   QuickFixLine = {
     bg = color.black,
-    sp = 'none',
+    sp = "none",
   },
 
   -- spell
@@ -214,27 +214,19 @@ local defaults = {
   },
 
   NeviraideTerminalDarkerBG = {
-    bg = generate_color(color.background, vim_bg == 'dark' and -3 or 15),
+    bg = generate_color(color.background, vim_bg == "dark" and -3 or 15),
   },
   NeviraideHelpDarkerBG = {
-    bg = generate_color(color.background, vim_bg == 'dark' and -3 or 15),
+    bg = generate_color(color.background, vim_bg == "dark" and -3 or 15),
   },
   NeviraideTerminalWinbar = {
-    bg = generate_color(color.background, vim_bg == 'dark' and -3 or 15),
+    bg = generate_color(color.background, vim_bg == "dark" and -3 or 15),
   },
 }
 
-local merge_tb = require('chameleon.utils').merge_tb
-defaults =
-  merge_tb(defaults, require('chameleon.utils').load_highlight('neviline'))
+local merge_tb = require("base46").merge_tb
+defaults = merge_tb(defaults, require("base46").get_integration("neviline"))
 
-defaults.NuiTitle = { bg = 'none', fg = color.active_accent, bold = true }
-
-if vim.g.b == 'none' or vim.g.b == 'solid' then
-  defaults.FloatBorder = { fg = color.second_background }
-  defaults.NormalFloat = { bg = color.second_background }
-  defaults.NuiTitle =
-    { bg = color.inactive_accent, fg = color.second_background, bold = true }
-end
+defaults.NuiTitle = { bg = "none", fg = color.active_accent, bold = true }
 
 return defaults

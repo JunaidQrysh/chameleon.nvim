@@ -1,85 +1,127 @@
+-- The MIT License (MIT)
+--
+-- Copyright (c) 2022 Leon Heidelbach
+--
+-- Permission is hereby granted, free of charge, to any person obtaining a copy
+-- of this software and associated documentation files (the "Software"), to deal
+-- in the Software without restriction, including without limitation the rights
+-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+-- copies of the Software, and to permit persons to whom the Software is
+-- furnished to do so, subject to the following conditions:
+--
+-- The above copyright notice and this permission notice shall be included in all
+-- copies or substantial portions of the Software.
+--
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+-- SOFTWARE.
+
+-- All credits to https://github.com/LeonHeidelbach for making this!
+-- 90% of functions are written by him
+
 local M = {}
 
-M.palette = {}
+if vim.g.hyde then
+  M.palette = {}
 
-local theme_path = os.getenv("HOME") .. "/.config/kitty/theme.conf"
+  local theme_path = os.getenv("HOME") .. "/.config/kitty/theme.conf"
 
-M.colors = {
-  kitty = {},
-}
+  M.colors = {
+    kitty = {},
+  }
 
-local function extract_kitty_colors()
-  local theme_file = io.open(theme_path, "r")
-  if theme_file then
-    for line in theme_file:lines() do
-      local color_name, color_value = line:match("^([%w%-_]+)%s+#([%da-fA-F]+)")
-      if color_name and color_value then
-        if color_name == "active_tab_background" then
-          color_name = "tab_background"
+  local function extract_kitty_colors()
+    local theme_file = io.open(theme_path, "r")
+    if theme_file then
+      for line in theme_file:lines() do
+        local color_name, color_value = line:match("^([%w%-_]+)%s+#([%da-fA-F]+)")
+        if color_name and color_value then
+          if color_name == "active_tab_background" then
+            color_name = "tab_background"
+          end
+          M.colors.kitty[color_name] = "#" .. color_value
         end
-        M.colors.kitty[color_name] = "#" .. color_value
       end
+    end
+
+    if theme_file then
+      theme_file:close()
     end
   end
 
-  if theme_file then
-    theme_file:close()
+  local function set_colors()
+    ---@type table
+    local theme_colors = require("base46").get_theme_tb("colors")
+    local kitty_colors = M.colors.kitty
+
+    if vim.g.hyde_int then
+      -- combine theme_colors and kitty_colors
+      for key, value in pairs(theme_colors) do
+        if kitty_colors[key] ~= nil then
+          M.palette[key] = kitty_colors[key]
+        else
+          M.palette[key] = value
+        end
+      end
+
+      -- add from kitty_colors, if not exist in theme_colors
+      for key, value in pairs(kitty_colors) do
+        if theme_colors[key] == nil then
+          M.palette[key] = value
+        end
+      end
+    else
+      M.palette = theme_colors
+    end
   end
+
+  extract_kitty_colors()
+  set_colors()
 end
 
-extract_kitty_colors()
-
-local function set_colors()
-  ---@type table
-  local theme_colors = require("chameleon.utils").get_theme_tb("colors")
-  local kitty_colors = M.colors.kitty
-
-  if require("chameleon").hyde then
-    -- combine theme_colors and kitty_colors
-    for key, value in pairs(theme_colors) do
-      if kitty_colors[key] ~= nil then
-        M.palette[key] = kitty_colors[key]
-      else
-        M.palette[key] = value
-      end
-    end
-
-    -- add from kitty_colors, if not exist in theme_colors
-    for key, value in pairs(kitty_colors) do
-      if theme_colors[key] == nil then
-        M.palette[key] = value
-      end
-    end
-  else
-    M.palette = theme_colors
-  end
-end
-set_colors()
-
----Convert a hex color value to RGB
----@param hex? string: The hex color value
----@return integer r: Red (0-255)
----@return integer g: Green (0-255)
----@return integer b: Blue (0-255)
+-- Convert a hex color value to RGB
+-- @param hex: The hex color value
+-- @return r: Red (0-255)
+-- @return g: Green (0-255)
+-- @return b: Blue (0-255)
 M.hex2rgb = function(hex)
-  local r = tonumber(hex:sub(2, 3), 16)
-  local g = tonumber(hex:sub(4, 5), 16)
-  local b = tonumber(hex:sub(6, 7), 16)
+  local hash = string.sub(hex, 1, 1) == "#"
+  if string.len(hex) ~= (7 - (hash and 0 or 1)) then
+    return nil
+  end
+
+  local r = tonumber(hex:sub(2 - (hash and 0 or 1), 3 - (hash and 0 or 1)), 16)
+  local g = tonumber(hex:sub(4 - (hash and 0 or 1), 5 - (hash and 0 or 1)), 16)
+  local b = tonumber(hex:sub(6 - (hash and 0 or 1), 7 - (hash and 0 or 1)), 16)
   return r, g, b
 end
 
----Convert an RGB color value to hex
----@param r integer Red (0-255)
----@param g integer Green (0-255)
----@param b integer Blue (0-255)
----@return string HEX The hexadecimal string representation of the color
+-- Convert a hex color value to RGB ratio
+-- @param hex: The hex color value
+-- @return r: Red (0-100)
+-- @return g: Green (0-100)
+-- @return b: Blue (0-100)
+M.hex2rgb_ratio = function(hex)
+  local r, g, b = M.hex2rgb(hex)
+  return math.floor(r / 255 * 100), math.floor(g / 255 * 100), math.floor(b / 255 * 100)
+end
+
+-- Convert an RGB color value to hex
+-- @param r: Red (0-255)
+-- @param g: Green (0-255)
+-- @param b: Blue (0-255)
+-- @return The hexadecimal string representation of the color
 M.rgb2hex = function(r, g, b)
-  return string.format("#%02x%02x%02x", r, g, b)
+  return string.format("#%02x%02x%02x", math.floor(r), math.floor(g), math.floor(b))
 end
 
 -- Helper function to convert a HSL color value to RGB
 -- Not to be used directly, use M.hsl2rgb instead
-local hsl2rgb_helper = function(p, q, a)
+M.hsl2rgb_helper = function(p, q, a)
   if a < 0 then
     a = a + 6
   end
@@ -115,9 +157,9 @@ M.hsl2rgb = function(h, s, l)
   end
 
   t1 = l * 2 - t2
-  r = hsl2rgb_helper(t1, t2, h + 2) * 255
-  g = hsl2rgb_helper(t1, t2, h) * 255
-  b = hsl2rgb_helper(t1, t2, h - 2) * 255
+  r = M.hsl2rgb_helper(t1, t2, h + 2) * 255
+  g = M.hsl2rgb_helper(t1, t2, h) * 255
+  b = M.hsl2rgb_helper(t1, t2, h - 2) * 255
 
   return r, g, b
 end
@@ -197,12 +239,11 @@ end
 -- @return The hex color value
 M.change_hex_hue = function(hex, percent)
   local h, s, l = M.hex2hsl(hex)
-  h = h + (percent / 100)
-  if h > 360 then
-    h = 360
-  end
+  -- Convert percentage to a degree shift
+  local shift = (percent / 100) * 360
+  h = (h + shift) % 360
   if h < 0 then
-    h = 0
+    h = h + 360
   end
   return M.hsl2hex(h, s, l)
 end
@@ -224,11 +265,11 @@ M.change_hex_saturation = function(hex, percent)
   return M.hsl2hex(h, s, l)
 end
 
----Lighten or darken a color by a given percentage.
----Negative values darken the color, positive values lighten it.
----@param hex string The hex color value.
----@param percent integer The percentage to lighten or darken the color.
----@return string HEX The hex color value.
+-- Lighten or darken a color by a given percentage
+-- @param hex The hex color value
+-- @param percent The percentage to lighten or darken the color.
+--                Negative values darken the color, positive values lighten it
+-- @return The hex color value
 M.change_hex_lightness = function(hex, percent)
   local h, s, l = M.hex2hsl(hex)
   l = l + (percent / 100)
@@ -247,18 +288,76 @@ end
 -- @param steps The number of steps to compute
 -- @return A table of hex color values
 M.compute_gradient = function(hex1, hex2, steps)
-  local r1, g1, b1 = M.hex2rgb(hex1)
-  local r2, g2, b2 = M.hex2rgb(hex2)
-  local gradients = {}
+  local h1, s1, l1 = M.hex2hsl(hex1)
+  local h2, s2, l2 = M.hex2hsl(hex2)
+  local h, s, l
+  local h_step = (h2 - h1) / (steps - 1)
+  local s_step = (s2 - s1) / (steps - 1)
+  local l_step = (l2 - l1) / (steps - 1)
+  local gradient = {}
 
   for i = 0, steps - 1 do
-    local r = r1 + math.floor((r2 - r1) * i / (steps - 1))
-    local g = g1 + math.floor((g2 - g1) * i / (steps - 1))
-    local b = b1 + math.floor((b2 - b1) * i / (steps - 1))
-    gradients[i + 1] = M.rgb2hex(r, g, b)
+    h = h1 + (h_step * i)
+    s = s1 + (s_step * i)
+    l = l1 + (l_step * i)
+    gradient[i + 1] = M.hsl2hex(h, s, l)
   end
 
-  return gradients
+  return gradient
+end
+
+-- Generate complementary colors
+-- @param hex The hex color value (string)
+-- @param count The number of complementary colors to generate
+-- @return A table containing the complementary colors in hex format
+M.hex2complementary = function(hex, count)
+  local h, s, l = M.hex2hsl(hex)
+  local complementary_colors = {}
+
+  -- Calculate the hue for the complementary color (180 degrees shift)
+  local complementary_hue = (h + 180) % 360
+
+  -- Create a gradient of colors by slightly varying the complementary hue
+  local hue_step = 360 / count
+  for i = 0, count - 1 do
+    local new_hue = (complementary_hue + (hue_step * i)) % 360
+    local complementary_hex = M.hsl2hex(new_hue, s, l)
+    table.insert(complementary_colors, complementary_hex)
+  end
+
+  return complementary_colors
+end
+
+-- Mix two colors with a given percentage.
+-- @param first The primary hex color.
+-- @param second The hex color you want to mix into the first color.
+-- @param strength The percentage of second color in the output.
+--                 This needs to be a number between 0 - 100.
+-- @return The mixed color as a hex value
+M.mix = function(first, second, strength)
+  if strength == nil then
+    strength = 0.5
+  end
+
+  local s = strength / 100
+  local r1, g1, b1 = M.hex2rgb(first)
+  local r2, g2, b2 = M.hex2rgb(second)
+
+  if r1 == nil or r2 == nil then
+    return first
+  end
+
+  if s == 0 then
+    return first
+  elseif s == 1 then
+    return second
+  end
+
+  local r3 = r1 * (1 - s) + r2 * s
+  local g3 = g1 * (1 - s) + g2 * s
+  local b3 = b1 * (1 - s) + b2 * s
+
+  return M.rgb2hex(r3, g3, b3)
 end
 
 return M

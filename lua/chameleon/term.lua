@@ -1,18 +1,25 @@
 local color = require("chameleon.colors").palette
 
-vim.g.terminal_color_0 = color.black
-vim.g.terminal_color_1 = color.red
-vim.g.terminal_color_2 = color.green
-vim.g.terminal_color_3 = color.yellow
-vim.g.terminal_color_4 = color.blue
-vim.g.terminal_color_5 = color.magenta
-vim.g.terminal_color_6 = color.cyan
-vim.g.terminal_color_7 = color.white
-vim.g.terminal_color_8 = color.grey
-vim.g.terminal_color_9 = color.pink
-vim.g.terminal_color_10 = color.bright_blue
-vim.g.terminal_color_11 = color.bright_yellow
-vim.g.terminal_color_12 = color.bright_green
-vim.g.terminal_color_13 = color.bright_magenta
-vim.g.terminal_color_14 = color.bright_cyan
-vim.g.terminal_color_15 = color.bright_white
+local config = string.format(
+  [[
+vim.g.terminal_color_0 = "%s" vim.g.terminal_color_1 = "%s" vim.g.terminal_color_2 = "%s" vim.g.terminal_color_3 = "%s" vim.g.terminal_color_4 = "%s" vim.g.terminal_color_5 = "%s" vim.g.terminal_color_6 = "%s" vim.g.terminal_color_7 = "%s" vim.g.terminal_color_8 = "%s" vim.g.terminal_color_9 = "%s" vim.g.terminal_color_10 = "%s" vim.g.terminal_color_11 = "%s" vim.g.terminal_color_12 = "%s" vim.g.terminal_color_13 = "%s" vim.g.terminal_color_14 = "%s" vim.g.terminal_color_15 = "%s"
+]],
+  color.black,
+  color.red,
+  color.green,
+  color.yellow,
+  color.blue,
+  color.magenta,
+  color.cyan,
+  color.white,
+  color.grey,
+  color.pink,
+  color.bright_blue,
+  color.bright_yellow,
+  color.bright_green,
+  color.bright_magenta,
+  color.bright_cyan,
+  color.bright_white
+)
+
+return config
