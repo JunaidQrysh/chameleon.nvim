@@ -225,7 +225,7 @@ local defaults = {
 }
 
 local merge_tb = require("base46").merge_tb
-defaults = merge_tb(defaults, require("base46").get_integration("neviline"))
+defaults = merge_tb(defaults, require("base46").get_integration("statusline"))
 
 defaults.NuiTitle = { bg = "none", fg = color.active_accent, bold = true }
 

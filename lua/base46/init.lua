@@ -36,14 +36,15 @@ local BASE_INTEGRATIONS = {
   "git",
   "lsp",
   "mason",
+  "statusline",
   "syntax",
   "treesitter",
   "telescope",
   "whichkey",
 }
 
-local HYDE_INTEGRATIONS = { "lazy", "neotree", "neviline" }
-local NON_HYDE_INTEGRATIONS = { "statusline", "nvimtree" }
+local HYDE_INTEGRATIONS = { "lazy", "neotree" }
+local NON_HYDE_INTEGRATIONS = { "nvimtree" }
 
 M.base46_path = fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":p:h")
 
