@@ -18,11 +18,13 @@ local M = {
   end,
   icons_type = function()
     if vim.g.nonicons then
-      return {
-        ---@type Nonicons
-        global = require("stigmata.nonicons"),
-        lspkind = require("stigmata.nonicons.lspkind"),
-      }
+      if vim.g.hyde then
+        return {
+          ---@type Nonicons
+          global = require("stigmata.nonicons"),
+          lspkind = require("stigmata.nonicons.lspkind"),
+        }
+      end
     end
     return {
       global = require("stigmata.devicons"),

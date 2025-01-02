@@ -187,7 +187,12 @@ M.compile = function(integrations)
   os.execute("rm -rf " .. cache_path)
   fn.mkdir(cache_path, "p")
 
-  local term = string.format("vim.g.nt='%s' %s", g.nt, g.hyde and require("chameleon.term") or require("base46.term"))
+  local term = string.format(
+    "vim.g.nt='%s' vim.g.hyde=%s %s",
+    g.nt,
+    g.hyde,
+    g.hyde and require("chameleon.term") or require("base46.term")
+  )
   if require("chconf").ui.statusline.enabled then
     if vim.g.hyde then
       term = string.format("%s %s", neviline, term)
@@ -195,10 +200,7 @@ M.compile = function(integrations)
       term = string.format("%s %s", stl, term)
     end
     get_statusline(vim.g.hyde)
-    vim.g.test = term
   end
-
-  vim.g.test = term
 
   M.str_to_cache("term", term)
   M.str_to_cache("colors", require("base46.color_vars"))
