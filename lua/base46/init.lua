@@ -187,8 +187,9 @@ M.get_integration = function(name)
 end
 
 M.compile = function(integrations)
-	os.execute("rm -rf " .. cache_path)
-	fn.mkdir(cache_path, "p")
+	if not vim.uv.fs_stat(vim.g.base46_cache) then
+		fn.mkdir(cache_path, "p")
+	end
 
 	local term = string.format(
 		"vim.g.nt='%s' vim.g.hyde=%s %s",
