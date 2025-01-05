@@ -46,7 +46,6 @@ M.get_integrations = function()
 	local integrations = { unpack(BASE_INTEGRATIONS) }
 	for _, value in ipairs(opts.integrations) do
 		if vim.g.hyde then
-			vim.g.test = value
 			if pcall(require, "chameleon.integrations." .. value) then
 				table.insert(integrations, value)
 			end

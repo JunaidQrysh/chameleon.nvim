@@ -22,7 +22,6 @@ end
 M.reload_theme = function(name)
 	vim.g.hyde, _ = pcall(require, "chameleon.colorschemes." .. name)
 	vim.g.nt = name
-	vim.g.base46_cache = vim.fn.stdpath("data") .. "/base46/"
 
 	require("base46").load_all_highlights()
 	require("plenary.reload").reload_module("volt.highlights")
@@ -30,6 +29,7 @@ M.reload_theme = function(name)
 		vim.g.base46_cache = nil
 	end
 	require("volt.highlights")
+	vim.g.base46_cache = vim.fn.stdpath("data") .. "/base46/"
 end
 
 return M
