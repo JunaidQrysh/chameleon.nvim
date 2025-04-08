@@ -46,6 +46,7 @@ local highlights = {
 
   TbTabOn = {
     fg = colors.red,
+    bg = colors.black,
   },
 
   TbTabOff = {
