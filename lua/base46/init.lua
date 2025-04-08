@@ -5,6 +5,7 @@ local cache_path = vim.g.base46_cache
 
 local integrations = {
   "blankline",
+  "blink",
   "cmp",
   "defaults",
   "devicons",
