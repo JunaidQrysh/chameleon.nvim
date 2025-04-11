@@ -50,7 +50,7 @@ local mixcolors = require("base46.colors").mix
 -- turns color var names in hl_override/hl_add to actual colors
 -- hl_add = { abc = { bg = "one_bg" }} -> bg = colors.one_bg
 M.turn_str_to_color = function(tb)
-  local colors = M.get_theme_tb "base_30"
+  local colors = vim.tbl_extend("force", M.get_theme_tb "base_30", M.get_theme_tb "base_16")
   local copy = vim.deepcopy(tb)
 
   for _, hlgroups in pairs(copy) do
