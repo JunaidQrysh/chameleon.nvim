@@ -114,9 +114,9 @@ M.type = "dark"
 
 M = require("base46").override_theme(M, "eldritch")
 
-local nvconfig = require "nvconfig"
+local chameleon = require "chameleon"
 
-if nvconfig.ui.telescope.style == "bordered" or nvconfig.base46.transparency then
+if chameleon.ui.telescope.style == "bordered" or chameleon.base46.transparency then
   M.polish_hl.telescope = {
     TelescopeBorder = { link = "FloatBorder" },
     TelescopePromptBorder = { link = "FloatBorder" },
@@ -124,7 +124,7 @@ if nvconfig.ui.telescope.style == "bordered" or nvconfig.base46.transparency the
   }
 end
 
-if nvconfig.ui.cmp.style == "default" then
+if chameleon.ui.cmp.style == "default" then
   M.polish_hl.cmp = {
     CmpBorder = { fg = M.base_30.purple },
   }

@@ -1,5 +1,6 @@
 local colors = require("base46").get_theme_tb "base_30"
 local theme = require("base46").get_theme_tb "base_16"
+local type = require("base46").get_theme_tb "type"
 local lighten = require("base46.colors").change_hex_lightness
 
 local defaults = {
@@ -57,7 +58,7 @@ local defaults = {
 
   -- lazy.nvim
   LazyH1 = { bg = colors.green, fg = colors.black },
-  LazyButton = { bg = colors.one_bg, fg = lighten(colors.light_grey, vim.o.bg == "dark" and 10 or -20) },
+  LazyButton = { bg = colors.one_bg, fg = lighten(colors.light_grey, type == "dark" and 10 or -20) },
   LazyH2 = { fg = colors.red, bold = true, underline = true },
   LazyReasonPlugin = { fg = colors.red },
   LazyValue = { fg = colors.teal },
@@ -87,4 +88,4 @@ local defaults = {
 -- merge statusline & hl_add tables!
 local merge_tb = require("base46").merge_tb
 local hexify_ColorStrs = require("base46").turn_str_to_color
-return merge_tb(defaults, hexify_ColorStrs(require("nvconfig").base46.hl_add))
+return merge_tb(defaults, hexify_ColorStrs(require("chameleon").base46.hl_add))
