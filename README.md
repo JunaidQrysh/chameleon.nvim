@@ -1,184 +1,102 @@
-## NvChad theme plugin
+# Chameleon.nvim
 
-- This plugin's a whole re-write of Norcalli's plugin.
-- It should be used along with [NvChad](https://github.com/NvChad/NvChad) for best experience.
-- Non NvChad users can have the nvconfig module on the path
+90+ colorschemes for Neovim with theme switcher, optional statusline, and [HyDE](https://github.com/HyDE-Project/HyDE) integration(automatic theme switching & wallbash).\
+\
+Basically this is a fork of [base46](https://github.com/NvChad/base46) made to be easily installable for non NvChad users if they just want a lot of themes with a theme switcher.\
+\
+NvChad's statusline is also included because base46 does not have integration for other statuslines but its disabled by default.
 
-## Setup
-This is supposed to be use with NvChad's UI plugin.
+## Installation
 
-Check its [install doc](https://github.com/NvChad/ui?tab=readme-ov-file#install)
-and then read `:h nvui.base46`
-
-## Supported Integrations
-
-- Bufferline.nvim
-- Cmp.nvim
-- Codeactionmenu
-- Nvim-dap
-- Nvim-webdevicons
-- Hop.nvim
-- Vim-illuminate
-- Lsp ( diagnostics )
-- Nvim Navic
-- LspSaga
-- Mason.nvim
-- Notify.nvim
-- Nvim-tree
-- Telescope.nvim
-- Rainbow-delimiters.nvim
-- Todo.nvim
-- Nvim-treesitter
-- Lsp Semantic tokens
-- Trouble.nvim
-- Whichkey.nvim
-- git-conflict.nvim
-- Orgmode
-- diffview.nvim
-- leap.nvim
-- Edgy.nvim
-- Grug-far.nvim
-- Flash.nvim
-- Blink.nvim
-- Blink.pairs
+```lua
+{
+    "JunaidQrysh/chameleon.nvim",
+    dependencies = { "nvzone/volt", "nvim-lua/plenary.nvim" },
+    event = "VeryLazy",
+}
+```
 
 ## Configuration
 
-- Base46 is configured by [nvconfig](https://github.com/NvChad/ui/blob/v3.0/lua/nvconfig.lua) in your path.
-- Read the [themeing docs](https://nvchad.com/docs/config/theming)
-
-## Highlight command
-
-- `:hi` command will list all highlight groups
-- `:hi` with args will highlight a **highlight group**
--  Example : `hi Comment guifg=#ffffff gui=italic, bold`
-
-### Neovim Lua api for setting highlights
-
-- Check `:h nvim_set_hl` for detailed doc
+### Key Mappings
 
 ```lua
-vim.api.nvim_set_hl(0, "Comment", {
-  fg = "#ffffff",
-  italic = true,
-  bold = true,
-})
+-- Theme switcher
+vim.keymap.set("n", "<leader>th", function()
+    require("tswitch").open()
+end, { desc = "Theme Switcher" })
+
+-- HyDE integration
+vim.keymap.set("n", "<leader>tH", function()
+    require("chameleon.hyprdots").toggle_hyde()
+end, { desc = "Toggle-Hyde" })
+
+-- Transparency toggle
+vim.keymap.set("n", "<leader>tT", function()
+    require("base46").toggle_transparency()
+end, { desc = "Toggle Transparency" })
 ```
-## Understanding theme variables
 
-There are 2 main tables used for `base46`
-
-- `base_30` is used for general UI
-- `base_16` is used for syntax highlighting
-- Use a color lightening/darkening tool, such as this
-  https://imagecolorpicker.com/color-code
-
-**Note: the below values are mostly approx values so its not compulsory that you
-have to use those exact numbers, test your theme i.e show it in the PR to get
-feedback from @siduck**
-
-## Default Theme table
+### Loading Theme
 
 ```lua
--- this line for types, by hovering and autocompletion (lsp required)
--- will help you understanding properties, fields, and what highlightings the color used for
----@type Base46Table
-local M = {}
--- UI
-M.base_30 = {
-  white = "",
-  black = "", -- usually your theme bg
-  darker_black = "", -- 6% darker than black
-  black2 = "", -- 6% lighter than black
-  one_bg = "", -- 10% lighter than black
-  one_bg2 = "", -- 6% lighter than one_bg
-  one_bg3 = "", -- 6% lighter than one_bg2
-  grey = "", -- 40% lighter than black (the % here depends so choose the perfect grey!)
-  grey_fg = "", -- 10% lighter than grey
-  grey_fg2 = "", -- 5% lighter than grey
-  light_grey = "",
-  red = "",
-  baby_pink = "",
-  pink = "",
-  line = "", -- 15% lighter than black
-  green = "",
-  vibrant_green = "",
-  nord_blue = "",
-  blue = "",
-  seablue = "",
-  yellow = "", -- 8% lighter than yellow
-  sun = "",
-  purple = "",
-  dark_purple = "",
-  teal = "",
-  orange = "",
-  cyan = "",
-  statusline_bg = "",
-  lightbg = "",
-  pmenu_bg = "",
-  folder_bg = ""
+vim.b.base46_cache = vim.fn.stdpath("cache") .. "/base46/"
+
+-- Load all highlights(integrations)
+for _, file in ipairs(vim.fn.readdir(vim.g.base46_cache)) do
+    dofile(vim.g.base46_cache .. file)
+end
+
+-- OR load specific highlights
+dofile(vim.g.base46_cache .. "defaults")
+dofile(vim.g.base46_cache .. "syntax")
+```
+
+### Statusline Configuration
+
+```lua
+-- Enable statusline
+opts = {
+    ui = { 
+        statusline = { 
+            enabled = true 
+        } 
+    }
 }
+```
 
--- check https://github.com/chriskempson/base16/blob/master/styling.md for more info
-M.base_16 = {
-  base00 = "",
-  base01 = "",
-  base02 = "",
-  base03 = "",
-  base04 = "",
-  base05 = "",
-  base06 = "",
-  base07 = "",
-  base08 = "",
-  base09 = "",
-  base0A = "",
-  base0B = "",
-  base0C = "",
-  base0D = "",
-  base0E = "",
-  base0F = ""
-}
+### Default Configuration
 
--- OPTIONAL
--- overriding or adding highlights for this specific theme only
--- defaults/treesitter is the filename i.e integration there,
-
-M.polish_hl = {
-  defaults = {
-    Comment = {
-      bg = "#ffffff", -- or M.base_30.cyan
-      italic = true,
+```lua
+{
+    base46 = {
+        hl_add = {}, -- add custom integrations
+        hl_override = {}, -- override default integrations
+        integrations = {}, -- add default integrations to compile
+        changed_themes = {}, -- override default themes
     },
-  },
-
-  treesitter = {
-    ["@variable"] = { fg = "#000000" },
-  },
+    ui = {
+        cmp = {
+            show_icons_left = false, -- only for non-atom styles!
+            style = "default", -- default/flat_light/flat_dark/atom/atom_colored
+            format_colors = {
+                tailwind = false, -- will work for css lsp too
+                icon = "󱓻",
+            },
+        },
+        telescope = { 
+            style = "bordered"  -- borderless / bordered
+        },
+        statusline = {
+            enabled = false,
+            theme = "default", -- default/vscode/vscode_colored/minimal
+            separator_style = "default", -- default/round/block/arrow
+            -- default/round/block/arrow separators work only for default statusline theme
+            -- round and block will work for minimal theme only
+            order = nil,
+            modules = nil,
+        },
+    },
 }
-
--- set the theme type whether is dark or light
-M.type = "dark" -- "or light"
-
--- this will be later used for users to override your theme table from chadrc
-M = require("base46").override_theme(M, "abc")
-
-return M
 ```
-
-## Credits
-
-- [@LeonHeidelbach](https://github.com/LeonHeidelbach) for making [color functions!](https://github.com/LeonHeidelbach/lua_color_tools) which we use in base46.
-
-## Contribute
-
-- Send PR in the https://github.com/NvChad/base46/tree/v2.5/lua/base46/themes
-
-### Testing your theme
-
-- Just place your theme file in your `/lua/themes` folder
-- And select the theme with theme switcher or change in chadrc
-
-## Tips
-
-- Capture what highlight are used under the cursor by running the `:Inspect` or
-  `:InspectTree` commands
+See [Integrations](https://github.com/JunaidQrysh/chameleon.nvim/tree/main/lua/base46/integrations) for additional supported plugins and features.

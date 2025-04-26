@@ -1,8 +1,7 @@
-local opts = require("nvconfig").base46
 local str = ""
 
-local present1, default_theme = pcall(require, "base46.themes." .. opts.theme)
-local colors = (present1 and default_theme) or require("themes." .. opts.theme)
+local present1, default_theme = pcall(require, "base46.themes." .. vim.g.nt)
+local colors = (present1 and default_theme) or require("themes." .. vim.g.nt)
 
 for name, hex in pairs(colors.base_30) do
   str = str .. name .. "='" .. hex
