@@ -1,4 +1,4 @@
-local stl = require("nvconfig").ui.statusline
+local stl = require("chameleon").ui.statusline
 
 if not stl.enabled then
   return {}

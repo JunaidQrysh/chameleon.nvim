@@ -1,5 +1,6 @@
 local base16 = require("base46").get_theme_tb "base_16"
 local colors = require("base46").get_theme_tb "base_30"
+local type = require("base46").get_theme_tb "type"
 local mixcolors = require("base46.colors").mix
 local generate_color = require("base46.colors").change_hex_lightness
 
@@ -69,7 +70,7 @@ for kind, color in pairs(kinds) do
 end
 
 -- style-specific overrides
-local cmp_ui = require("nvconfig").ui.cmp
+local cmp_ui = require("chameleon").ui.cmp
 
 local styles = {
   default = {
@@ -108,7 +109,7 @@ if cmp_ui.style == "atom" then
   for kind, _ in pairs(kinds) do
     local hl_name = "BlinkCmpKind" .. kind
     highlights[hl_name] = vim.tbl_deep_extend("force", highlights[hl_name] or {}, {
-      bg = vim.o.bg == "dark" and black2_l or black2_d,
+      bg = type == "dark" and black2_l or black2_d,
     })
   end
 end

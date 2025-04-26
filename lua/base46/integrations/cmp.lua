@@ -1,5 +1,6 @@
 local base16 = require("base46").get_theme_tb "base_16"
 local colors = require("base46").get_theme_tb "base_30"
+local type = require("base46").get_theme_tb "type"
 local mixcolors = require("base46.colors").mix
 
 local highlights = {
@@ -47,7 +48,7 @@ local item_kinds = {
   CmpItemKindSuperMaven = { fg = colors.yellow },
 }
 
-local cmp_ui = require("nvconfig").ui.cmp
+local cmp_ui = require("chameleon").ui.cmp
 
 -- custom highlights per style!
 local styles = {
@@ -105,7 +106,7 @@ local black2_d = generate_color(colors.black2, -6)
 -- override item_kind highlights for atom style
 if cmp_ui.style == "atom" then
   for key, value in pairs(item_kinds) do
-    item_kinds[key] = vim.tbl_deep_extend("force", value, { bg = vim.o.bg == "dark" and black2_l or black2_d })
+    item_kinds[key] = vim.tbl_deep_extend("force", value, { bg = type == "dark" and black2_l or black2_d })
   end
 end
 

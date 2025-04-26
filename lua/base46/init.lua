@@ -1,7 +1,10 @@
 local M = {}
-local g = vim.g
-local opts = require("nvconfig").base46
+local opts = require("chameleon").base46
 local cache_path = vim.g.base46_cache
+local statusline = "vim.o.statusline = '%!v:lua.require(\"chameleon.statusline."
+  .. require("chameleon").ui.statusline.theme
+  .. "\")()' "
+  .. 'require("chameleon.statusline.utils").autocmds()'
 
 local function tbval_index(tb, val)
   for i, v in ipairs(tb) do
@@ -20,12 +23,9 @@ local integrations = {
   "git",
   "lsp",
   "mason",
-  "nvcheatsheet",
-  "nvimtree",
   "statusline",
   "syntax",
   "treesitter",
-  "tbline",
   "telescope",
   "whichkey",
 }
@@ -43,17 +43,25 @@ for _, value in ipairs(opts.excluded or {}) do
 end
 
 M.get_theme_tb = function(type)
-  local name = opts.theme
-  local present1, default_theme = pcall(require, "base46.themes." .. name)
-  local present2, user_theme = pcall(require, "themes." .. name)
+  local present1, default_theme = pcall(require, "base46.themes." .. vim.g.nt)
+  local present2, user_theme = pcall(require, "themes." .. vim.g.nt)
+  local theme
 
   if present1 then
-    return default_theme[type]
+    theme = default_theme[type]
   elseif present2 then
-    return user_theme[type]
+    theme = user_theme[type]
   else
     error "No such theme!"
   end
+  if vim.g.hyde then
+    local th_type = default_theme.type
+    th_type = require("chameleon.hyprdots").wallbash(theme, type, th_type)
+    if th_type then
+      theme = th_type
+    end
+  end
+  return theme
 end
 
 M.merge_tb = function(...)
@@ -158,18 +166,29 @@ M.str_to_cache = function(filename, str)
 end
 
 M.compile = function()
-  if not vim.uv.fs_stat(vim.g.base46_cache) then
+  if not vim.uv.fs_stat(cache_path) then
     vim.fn.mkdir(cache_path, "p")
   end
 
-  M.str_to_cache("term", require "base46.term")
+  local term = string.format("vim.g.nt='%s' %s", vim.g.nt, require "base46.term")
+  if require("chameleon").ui.statusline.enabled then
+    term = string.format("%s %s", statusline, term)
+    vim.api.nvim_clear_autocmds {
+      event = "LspProgress",
+      pattern = { "begin", "report", "end" },
+    }
+    vim.o.statusline = "%!v:lua.require('chameleon.statusline." .. require("chameleon").ui.statusline.theme .. "')()"
+    require("chameleon.statusline.utils").autocmds()
+  end
+
+  M.str_to_cache("term", term)
   M.str_to_cache("colors", require "base46.color_vars")
 
   for _, name in ipairs(integrations) do
     local hl_str = M.tb_2str(M.get_integration(name))
 
     if name == "defaults" then
-      hl_str = "vim.o.tgc=true vim.o.bg='" .. M.get_theme_tb "type" .. "' " .. hl_str
+      hl_str = "vim.o.bg='" .. M.get_theme_tb "type" .. "' " .. hl_str
     end
 
     M.str_to_cache(name, hl_str)
@@ -181,7 +200,7 @@ M.load_all_highlights = function()
   M.compile()
 
   for _, name in ipairs(integrations) do
-    dofile(vim.g.base46_cache .. name)
+    dofile(cache_path .. name)
   end
 
   -- update blankline
@@ -197,36 +216,15 @@ M.override_theme = function(default_theme, theme_name)
   return M.merge_tb(default_theme, changed_themes.all or {}, changed_themes[theme_name] or {})
 end
 
---------------------------- user functions ----------------------------------------------------------
-M.toggle_theme = function()
-  local themes = opts.theme_toggle
-
-  if opts.theme ~= themes[1] and opts.theme ~= themes[2] then
-    vim.notify "Set your current theme to one of those mentioned in the theme_toggle table (chadrc)"
-    return
-  end
-
-  g.icon_toggled = not g.icon_toggled
-  g.toggle_theme_icon = g.icon_toggled and "   " or "   "
-
-  opts.theme = (themes[1] == opts.theme and themes[2]) or themes[1]
-
-  package.loaded.chadrc = nil
-  local chadrc = require "chadrc"
-  local old_theme = chadrc.base46.theme
-
-  require("nvchad.utils").replace_word('theme = "' .. old_theme, 'theme = "' .. opts.theme)
-  M.load_all_highlights()
-end
-
 M.toggle_transparency = function()
-  opts.transparency = not opts.transparency
+  if vim.fn.filereadable(vim.fn.stdpath "data" .. "/transparency") == 1 then
+    opts.transparency = false
+    os.remove(vim.fn.stdpath "data" .. "/transparency")
+  else
+    opts.transparency = true
+    vim.fn.writefile({}, vim.fn.stdpath "data" .. "/transparency")
+  end
   M.load_all_highlights()
-
-  package.loaded.chadrc = nil
-  local old = require("chadrc").base46.transparency
-  local new = "transparency = " .. tostring(opts.transparency)
-  require("nvchad.utils").replace_word("transparency = " .. tostring(old), new)
 end
 
 return M
