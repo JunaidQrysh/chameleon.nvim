@@ -2,7 +2,6 @@ local theme = require("base46").get_theme_tb "base_16"
 local base30 = require("base46").get_theme_tb "base_30"
 
 local opts = require("nvconfig").base46
-local transparent = opts.transparent
 
 return {
 
@@ -79,7 +78,7 @@ return {
   ["@markup.underline"] = { underline = true },
   ["@markup.italic"] = { italic = true },
   ["@markup.strikethrough"] = { strikethrough = true },
-  ["@markup.quote"] = { bg = transparent and nil or base30.black2 },
+  ["@markup.quote"] = { bg = opts.transparency and nil or base30.black2 },
 
   ["@comment"] = { fg = base30.grey_fg },
   ["@comment.todo"] = { fg = base30.grey, bg = base30.white },

@@ -1,3 +1,5 @@
+local opts = require("nvconfig").base46
+
 local base16 = require("base46").get_theme_tb "base_16"
 local colors = require("base46").get_theme_tb "base_30"
 
@@ -43,8 +45,10 @@ local hlgroups = {
   NavicSeparator = { fg = colors.red },
 }
 
-for _, value in pairs(hlgroups) do
-  value["bg"] = colors.statusline_bg
+if not opts.transparency then
+  for _, value in pairs(hlgroups) do
+    value["bg"] = colors.statusline_bg
+  end
 end
 
 return hlgroups
