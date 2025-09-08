@@ -3,6 +3,14 @@ local g = vim.g
 local opts = require("nvconfig").base46
 local cache_path = vim.g.base46_cache
 
+local function tbval_index(tb, val)
+  for i, v in ipairs(tb) do
+    if v == val then
+      return i
+    end
+  end
+end
+
 local integrations = {
   "blankline",
   "blink",
@@ -24,6 +32,14 @@ local integrations = {
 
 for _, value in ipairs(opts.integrations) do
   table.insert(integrations, value)
+end
+
+for _, value in ipairs(opts.excluded or {}) do
+  local val_i = tbval_index(integrations, value)
+
+  if val_i then
+    table.remove(integrations, val_i)
+  end
 end
 
 M.get_theme_tb = function(type)
