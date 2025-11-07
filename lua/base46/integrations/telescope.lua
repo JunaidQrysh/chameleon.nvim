@@ -43,9 +43,9 @@ local styles = {
     TelescopePromptBorder = { fg = colors.one_bg3 },
     TelescopeResultsTitle = { fg = colors.black, bg = colors.green },
     TelescopePreviewTitle = { fg = colors.black, bg = colors.blue },
-    TelescopePromptPrefix = { fg = colors.red, bg = colors.black },
-    TelescopeNormal = { bg = colors.black },
-    TelescopePromptNormal = { bg = colors.black },
+    TelescopePromptPrefix = { fg = colors.red, bg = "none" },
+    TelescopeNormal = { bg = "none" },
+    TelescopePromptNormal = { bg = "none" },
   },
 }
 
