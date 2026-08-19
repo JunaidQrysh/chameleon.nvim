@@ -2,8 +2,8 @@ local M = {}
 
 local PATHS = {
   hyde = vim.fn.stdpath "data" .. "/hyde",
-  hypr_conf = os.getenv "HOME" .. "/.config/hypr/themes/theme.conf",
-  hyde_status = (os.getenv "HYDE_CACHE_HOME" or os.getenv "HOME" .. "/.cache/hyde") .. "/dconf",
+  hypr_conf = os.getenv "HOME" .. "/.local/state/hyde/staterc",
+  hyde_status = os.getenv "HOME" .. "/.config/dconf",
   base46_cache = vim.fn.stdpath "data" .. "/base46/",
 }
 
@@ -58,30 +58,30 @@ local function get_theme_from_hypr()
     return nil
   end
 
-  local theme = content:match "\n?%$GTK[_%-]THEME%s*=%s*([^\n]+)"
+  local theme = content:match 'HYDE_THEME%s*=%s*"([^"]+)"'
   if not theme then
-    print "GTK-THEME Not Found in $HOME/.config/hypr/themes/theme.conf"
+    print "HYDE_THEME Not Found in $HOME/.local/state/hyde/staterc"
     return nil
   end
 
   theme = theme:match "^%s*(.-)%s*$" -- Trim spaces
 
   local theme_map = {
-    ["Catppuccin-Mocha"] = "catppuccin",
-    ["Catppuccin-Latte"] = "catppuccin_latte",
-    ["Tokyo-Night"] = "tokyonight",
-    ["Rose-Pine"] = "rosepine",
-    ["Material-Sakura"] = "material-lighter",
-    ["Graphite-Mono"] = "monochrome",
-    ["Decay-Green"] = "decay",
-    ["Edge-Runner"] = "gatekeeper",
-    ["Frosted-Glass"] = "github_light",
-    ["Gruvbox-Retro"] = "gruvbox",
-    ["Synth-Wave"] = "flouromachine",
-    ["Nordic-Blue"] = "nord",
+    ["Catppuccin Mocha"] = "catppuccin",
+    ["Catppuccin Latte"] = "catppuccin_latte",
+    ["Tokyo Night"] = "tokyonight",
+    ["Rosé Pine"] = "rosepine",
+    ["Material Sakura"] = "material-lighter",
+    ["Graphite Mono"] = "monochrome",
+    ["Decay Green"] = "decay",
+    ["Edge Runner"] = "gatekeeper",
+    ["Frosted Glass"] = "github_light",
+    ["Gruvbox Retro"] = "gruvbox",
+    ["Synth Wave"] = "flouromachine",
+    ["Nordic Blue"] = "nord",
   }
 
-  return theme_map[theme] or theme
+  return theme_map[theme] or "catppuccin"
 end
 
 function M.set_hyde()
@@ -102,6 +102,9 @@ end
 function M.toggle_hyde()
   if vim.fn.filereadable(PATHS.hyde) == 1 then
     os.remove(PATHS.hyde)
+    vim.g.nt = "catppuccin"
+    vim.g.hyde = false
+    require("base46").load_all_highlights()
     print "Hyde Integration Off"
   else
     vim.g.hyde_alert = true

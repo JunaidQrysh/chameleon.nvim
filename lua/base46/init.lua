@@ -237,9 +237,11 @@ M.toggle_transparency = function()
   if vim.fn.filereadable(vim.fn.stdpath "data" .. "/transparency") == 1 then
     opts.transparency = false
     os.remove(vim.fn.stdpath "data" .. "/transparency")
+    print "Transparency Off"
   else
     opts.transparency = true
     vim.fn.writefile({}, vim.fn.stdpath "data" .. "/transparency")
+    print "Transparency On"
   end
   M.load_all_highlights()
 end
